@@ -9,3 +9,7 @@ edition = "2024"
 rust-version = "1.88.0"
 
 [dependencies]
+
+[build-dependencies]
+cc = { version = "1.2.34", features = ["parallel"] }
+
