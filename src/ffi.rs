@@ -1,6 +1,6 @@
 use std::os::raw::{c_char, c_int, c_long, c_ulong, c_void};
 
-// FFI bindings for libgit2/xdiff
+// FFI bindings for libgit2/xdiff, https://github.com/libgit2/xdiff
 
 #[repr(C)]
 pub struct MmFile {
