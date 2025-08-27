@@ -3,7 +3,7 @@
 
 # threeway-merge-rs
 
-Git-style 3-way merge library in Rust with LibXDiff FFI.
+Git-style 3-way merge library in Rust that wraps LibXDiff functionality.
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Rust](https://img.shields.io/badge/rust-1.86.0+-orange.svg?logo=rust)](https://www.rust-lang.org/)
