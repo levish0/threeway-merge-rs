@@ -171,10 +171,10 @@ cargo test -- --nocapture
 - [**cc crate**](https://github.com/rust-lang/cc-rs) – Build-time C compilation
 
 ### Special Thanks
-- **Open Source Community** – For the incredible tools and libraries
-- **Contributors** – Everyone who improves `threeway-merge-rs`
-- **Davide Libenzi** – Original author of xdiff
-- **libgit2 team** – For maintaining the standalone xdiff version
+- **Open Source Community**: For the incredible tools and libraries
+- **Contributors**: Everyone who improves `threeway-merge-rs`
+- **Davide Libenzi**: Original author of xdiff
+- **libgit2 team**: For maintaining the standalone xdiff version
 
 ---
 
