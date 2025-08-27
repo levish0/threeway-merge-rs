@@ -1,0 +1,5 @@
+<<<<<<< OURS
+Hello Rust world
+=======
+Hello beautiful world
+>>>>>>> THEIRS

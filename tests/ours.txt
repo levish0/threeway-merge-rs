@@ -1,0 +1,5 @@
+<<<<<<< ours.txt
+Hello Rust world
+=======
+Hello beautiful world
+>>>>>>> theirs.txt
