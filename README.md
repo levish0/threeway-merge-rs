@@ -136,5 +136,5 @@ git merge-file --diff-algorithm histogram --zdiff3 \
 ---
 
 <div align="center">
-**Made with ♥️ and lots of ☕ by levish (Levi Lim) & Community**
+<b>Made with ♥️ and lots of ☕ by levish (Levi Lim) & Community</b>
 </div>
