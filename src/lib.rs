@@ -5,7 +5,7 @@
 //! ## Quick Start
 //!
 //! ```rust
-//! use threeway_merge_rs::{merge_strings, MergeOptions, DiffAlgorithm, MergeStyle};
+//! use threeway_merge::{merge_strings, MergeOptions, DiffAlgorithm, MergeStyle};
 //!
 //! let base = "Hello world";
 //! let ours = "Hello Rust world";  
