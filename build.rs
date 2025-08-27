@@ -12,6 +12,9 @@ fn main() {
     build.file("src/xdiff/xpatience.c");
     build.file("src/xdiff/xprepare.c");
     build.file("src/xdiff/xutils.c");
+
+    // Suppress signed/unsigned comparison warnings
+    build.flag_if_supported("-Wno-sign-compare");
     
     // Compile and link
     build.compile("xdiff");
