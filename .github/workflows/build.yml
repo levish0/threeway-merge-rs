@@ -33,3 +33,6 @@ jobs:
 
       - name: Release Build
         run: cargo build --release
+
+      - name: Run Tests
+        run: cargo test --all --locked
