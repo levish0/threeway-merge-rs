@@ -3,10 +3,10 @@
 
 # threeway-merge-rs
 
-Git-style 3-way merge library in Rust that wraps LibXDiff functionality.
+Git-style 3-way string merging using proven algorithms from libgit2/xdiff.
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Rust](https://img.shields.io/badge/rust-1.86.0+-orange.svg?logo=rust)](https://www.rust-lang.org/)
+[![Rust](https://img.shields.io/badge/rust-1.88.0+-orange.svg?logo=rust)](https://www.rust-lang.org/)
 
 </div>
 
@@ -14,19 +14,18 @@ Git-style 3-way merge library in Rust that wraps LibXDiff functionality.
 
 ## 🌟 Overview
 
-`threeway-merge-rs` is a Rust library for performing **Git-style 3-way merges**.  
-It leverages **LibXDiff** (LGPL) via FFI for diffing functionality while providing a safe and ergonomic Rust wrapper.  
-The library can detect conflicts, generate conflict hunks, and supports multiple diffing and merging algorithms.
+`threeway-merge-rs` is a Rust library for **string-based 3-way merging** using Git's proven merge algorithms.  
+It uses **libgit2/xdiff** via safe FFI bindings, providing the same merge behavior as `git merge-file` but with a pure string API perfect for applications that need to merge text content programmatically.
 
 ---
 
 ## ✨ Features
 
-- Perform 3-way merges on text files
-- Detect conflicts and generate conflict hunks
-- Provides a **Rust FFI interface** to [LibXDiff](http://xdiff.sourceforge.net/)
-- Lightweight and fast
-- Fully MIT-licensed Rust wrapper
+- **String-based API**: Works with `&str` inputs, no file I/O required
+- **Git-compatible**: Produces identical results to `git merge-file`  
+- **Memory safe**: Safe Rust wrapper around battle-tested C library
+- **Conflict detection**: Automatic conflict counting and detailed output
+- **Zero runtime dependencies**: C library compiled at build time
 
 ### Configurable Merge Options
 
@@ -58,16 +57,81 @@ The library can detect conflicts, generate conflict hunks, and supports multiple
 
 ---
 
+## 🚀 Quick Start
+
+### Installation
+
+Add to your `Cargo.toml`:
+
+```toml
+[dependencies]
+threeway-merge = "0.1.0"
+```
+
+### Basic Usage
+
+```rust
+use threeway_merge_rs::{merge_strings, MergeOptions};
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let base = "Hello world\nSecond line";
+    let ours = "Hello Rust world\nSecond line"; 
+    let theirs = "Hello beautiful world\nSecond line";
+
+    let result = merge_strings(base, ours, theirs, &MergeOptions::default())?;
+    
+    println!("Conflicts: {}", result.conflicts);
+    println!("Result:\n{}", result.content);
+    
+    Ok(())
+}
+```
+
+### Advanced Configuration
+
+```rust
+use threeway_merge_rs::{
+    merge_strings, MergeOptions, DiffAlgorithm, MergeStyle, MergeFavor
+};
+
+let mut options = MergeOptions::default();
+options.algorithm = DiffAlgorithm::Histogram;
+options.style = MergeStyle::ZealousDiff3;
+options.favor = Some(MergeFavor::Ours);
+options.ours_label = Some("mine".to_string());
+options.theirs_label = Some("theirs".to_string());
+options.marker_size = 10;
+
+let result = merge_strings(base, ours, theirs, &options)?;
+```
+
+### Git Equivalent
+
+This Rust code:
+```rust
+let result = merge_strings(base, ours, theirs, &options)?;
+```
+
+Is equivalent to:
+```bash
+git merge-file --diff-algorithm histogram --zdiff3 \
+  -L "mine" ours.txt -L "original" base.txt -L "theirs" theirs.txt --stdout
+```
+
+---
+
 ## 🙏 Acknowledgments
 
 ### Core Technologies
 - [**Rust**](https://www.rust-lang.org/) – Systems programming language with safety and performance
-- [**LibXDiff**](http://xdiff.sourceforge.net/) – C library for file diffing (LGPL 2.1+), used via FFI
+- [**libgit2/xdiff**](https://github.com/libgit2/xdiff) – Standalone version of Git's xdiff library
+- [**cc crate**](https://github.com/rust-lang/cc-rs) – Build-time C compilation
 
 ### Special Thanks
 - **Open Source Community** – For the incredible tools and libraries
 - **Contributors** – Everyone who improves `threeway-merge-rs`
-- **Davide Libenzi** – Original author of LibXDiff
+- **Davide Libenzi** – Original author of xdiff
+- **libgit2 team** – For maintaining the standalone xdiff version
 
 ---
 

@@ -39,8 +39,6 @@ pub struct XmpParam {
 pub const XDF_NEED_MINIMAL: c_ulong = 1 << 0;
 pub const XDF_PATIENCE_DIFF: c_ulong = 1 << 14;
 pub const XDF_HISTOGRAM_DIFF: c_ulong = 1 << 15;
-pub const XDF_DIFF_ALGORITHM_MASK: c_ulong = XDF_PATIENCE_DIFF | XDF_HISTOGRAM_DIFF;
-
 pub const XDL_MERGE_MINIMAL: c_int = 0;
 pub const XDL_MERGE_EAGER: c_int = 1;
 pub const XDL_MERGE_ZEALOUS: c_int = 2;
@@ -52,8 +50,6 @@ pub const XDL_MERGE_FAVOR_UNION: c_int = 3;
 
 pub const XDL_MERGE_DIFF3: c_int = 1;
 pub const XDL_MERGE_ZEALOUS_DIFF3: c_int = 2;
-
-pub const DEFAULT_CONFLICT_MARKER_SIZE: c_int = 7;
 
 unsafe extern "C" {
     pub fn xdl_merge(
