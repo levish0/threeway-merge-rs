@@ -40,4 +40,4 @@ jobs:
         run: cargo build --release
 
       - name: Run Tests
-        run: cargo test --all --locked
+        run: cargo test --all --locked -- --nocapture
