@@ -11,17 +11,6 @@ fn string_to_mmfile(s: &str) -> MmFile {
     }
 }
 
-fn count_conflicts(content: &str) -> usize {
-    content
-        .lines()
-        .filter(|line| {
-            line.starts_with("<<<<<<<")
-                || line.starts_with("=======")
-                || line.starts_with(">>>>>>>")
-        })
-        .count()
-        / 3
-}
 
 pub fn merge_strings(
     base: &str,
@@ -126,7 +115,8 @@ pub fn merge_strings(
         String::from_utf8_lossy(slice).into_owned()
     };
 
-    let conflicts = count_conflicts(&content);
+    // Use xdl_merge return value as conflict count (ret >= 0 means success, value is conflict count)
+    let conflicts = ret as usize;
 
     // Free the memory allocated by xdiff
     unsafe {

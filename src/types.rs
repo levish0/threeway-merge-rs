@@ -61,6 +61,18 @@ pub struct MergeResult {
     pub conflicts: usize,
 }
 
+impl MergeResult {
+    /// Returns true if there are any conflicts in the merge result
+    pub fn has_conflicts(&self) -> bool {
+        self.conflicts > 0
+    }
+
+    /// Returns true if the merge was successful without conflicts
+    pub fn is_clean_merge(&self) -> bool {
+        self.conflicts == 0
+    }
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum MergeError {
     #[error("Internal merge error: {0}")]
