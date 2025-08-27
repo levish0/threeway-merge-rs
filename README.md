@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/banner.png" alt="3way merge" width="400"/>
+  <img src="./assets/banner.png" alt="3way merge"/>
 
 # threeway-merge-rs
 
