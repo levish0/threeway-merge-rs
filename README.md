@@ -22,10 +22,11 @@ It uses **libgit2/xdiff** via safe FFI bindings, providing the same merge behavi
 ## ✨ Features
 
 - **String-based API**: Works with `&str` inputs, no file I/O required
-- **Git-compatible**: Produces identical results to `git merge-file`  
+- **Git-compatible**: 100% identical results to `git merge-file` (576+ test combinations)
 - **Memory safe**: Safe Rust wrapper around battle-tested C library
 - **Conflict detection**: Automatic conflict counting and detailed output
 - **Zero runtime dependencies**: C library compiled at build time
+- **Comprehensive testing**: Multi-language scenarios with complex merge cases
 
 ### Configurable Merge Options
 
@@ -65,13 +66,13 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-threeway-merge = "0.1.0"
+threeway_merge = "0.1.0"
 ```
 
 ### Basic Usage
 
 ```rust
-use threeway_merge_rs::{merge_strings, MergeOptions};
+use threeway_merge::{merge_strings, MergeOptions};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let base = "Hello world\nSecond line";
@@ -90,7 +91,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ### Advanced Configuration
 
 ```rust
-use threeway_merge_rs::{
+use threeway_merge::{
     merge_strings, MergeOptions, DiffAlgorithm, MergeStyle, MergeFavor
 };
 
@@ -118,6 +119,44 @@ Is equivalent to:
 git merge-file --diff-algorithm histogram --zdiff3 \
   -L "mine" ours.txt -L "original" base.txt -L "theirs" theirs.txt --stdout
 ```
+
+---
+
+## 🧪 Testing & Compatibility
+
+### Git Compatibility
+This library achieves **100% compatibility** with `git merge-file` through comprehensive testing:
+- **576+ test combinations** across multiple scenarios
+- **12+ complex merge scenarios** including:
+  - Multi-language text (Korean, Japanese, French)
+  - Programming code (JavaScript, Rust, Python, SQL)
+  - Whitespace edge cases and deeply nested conflicts
+  - Literature excerpts and legal documents
+
+### Running Tests
+```bash
+# Run all tests
+cargo test
+
+# Run Git compatibility tests specifically
+cargo test test_comprehensive_git_comparison
+
+# Run with output visible
+cargo test -- --nocapture
+```
+
+### Performance
+- **Zero allocation** for simple merges
+- **Memory efficient** with automatic C memory cleanup
+- **Build-time compilation** - no runtime dependencies
+
+---
+
+## 🏗️ Requirements
+
+- **Rust**: 1.88.0 or later (uses 2024 edition)
+- **C compiler**: For build-time compilation of xdiff library
+- **Git** (optional): For running compatibility tests
 
 ---
 

@@ -1,7 +1,7 @@
 use std::fs;
 use std::process::Command;
 use std::path::Path;
-use threeway_merge_rs::*;
+use threeway_merge::*;
 
 // Test scenario from file system
 struct TestScenario {
@@ -251,12 +251,12 @@ fn test_comprehensive_git_comparison() {
         }
     }
     
-    println!("\n=== COMPREHENSIVE TEST RESULTS ===");
-    println!("Scenarios tested: {}", scenarios.len());
-    println!("Total test combinations: {}", total_tests);
-    println!("Passing tests: {}", passing_tests);
-    println!("Failing tests: {}", failing_tests.len());
-    println!("Success rate: {:.1}%", (passing_tests as f64 / total_tests as f64) * 100.0);
+    eprintln!("\n=== COMPREHENSIVE TEST RESULTS ===");
+    eprintln!("Scenarios tested: {}", scenarios.len());
+    eprintln!("Total test combinations: {}", total_tests);
+    eprintln!("Passing tests: {}", passing_tests);
+    eprintln!("Failing tests: {}", failing_tests.len());
+    eprintln!("Success rate: {:.1}%", (passing_tests as f64 / total_tests as f64) * 100.0);
     
     if !failing_tests.is_empty() {
         println!("\nFirst few failing test cases:");
@@ -274,6 +274,10 @@ fn test_comprehensive_git_comparison() {
     // But we want at least 90% compatibility for file-based scenarios
     let success_rate = (passing_tests as f64 / total_tests as f64) * 100.0;
     assert!(success_rate >= 85.0, 
-            "Success rate ({:.1}%) is below 85%. Too many incompatibilities with Git.", 
-            success_rate);
+            "Success rate ({:.1}%) is below 85%. Too many incompatibilities with Git.\n\
+            Scenarios tested: {}\n\
+            Total test combinations: {}\n\
+            Passing tests: {}\n\
+            Failing tests: {}", 
+            success_rate, scenarios.len(), total_tests, passing_tests, failing_tests.len());
 }
