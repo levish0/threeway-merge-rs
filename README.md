@@ -69,7 +69,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-threeway_merge = "0.1.0"
+threeway_merge = "0.1"
 ```
 
 ### Basic Usage

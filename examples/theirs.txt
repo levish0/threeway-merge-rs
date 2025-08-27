@@ -1,5 +1,58 @@
-line1
-line2
-line3
-line4
-line5
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    profile_image_url VARCHAR(500),
+    bio TEXT,
+    location VARCHAR(100),
+    website VARCHAR(200),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
+    category_id INTEGER REFERENCES categories(id),
+    title VARCHAR(200) NOT NULL,
+    slug VARCHAR(250) NOT NULL UNIQUE,
+    excerpt TEXT,
+    content TEXT,
+    featured_image_url VARCHAR(500),
+    is_featured BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    post_id INTEGER REFERENCES posts(id),
+    user_id INTEGER REFERENCES users(id),
+    content TEXT NOT NULL,
+    ip_address INET,
+    user_agent TEXT,
+    is_approved BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE likes (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
+    post_id INTEGER REFERENCES posts(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, post_id)
+);
+
+CREATE INDEX idx_posts_user_id ON posts(user_id);
+CREATE INDEX idx_posts_category_id ON posts(category_id);
+CREATE INDEX idx_posts_slug ON posts(slug);
+CREATE INDEX idx_comments_post_id ON comments(post_id);
+CREATE INDEX idx_likes_post_id ON likes(post_id);

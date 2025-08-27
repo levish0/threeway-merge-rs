@@ -1,5 +1,112 @@
-line1
-line2
-line3
-line4
-line5
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+<<<<<<< mine
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    is_active BOOLEAN DEFAULT TRUE,
+    last_login TIMESTAMP,
+||||||| original
+=======
+    profile_image_url VARCHAR(500),
+    bio TEXT,
+    location VARCHAR(100),
+    website VARCHAR(200),
+>>>>>>> theirs
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+<<<<<<< mine
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+||||||| original
+    user_id INTEGER REFERENCES users(id),
+=======
+    user_id INTEGER REFERENCES users(id),
+    category_id INTEGER REFERENCES categories(id),
+>>>>>>> theirs
+    title VARCHAR(200) NOT NULL,
+    slug VARCHAR(250) NOT NULL UNIQUE,
+    excerpt TEXT,
+    content TEXT,
+<<<<<<< mine
+    status VARCHAR(20) DEFAULT 'draft',
+    published_at TIMESTAMP,
+    view_count INTEGER DEFAULT 0,
+||||||| original
+=======
+    featured_image_url VARCHAR(500),
+    is_featured BOOLEAN DEFAULT FALSE,
+>>>>>>> theirs
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    parent_id INTEGER REFERENCES comments(id),
+    content TEXT NOT NULL,
+<<<<<<< mine
+    is_deleted BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tags (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE,
+||||||| original
+=======
+    ip_address INET,
+    user_agent TEXT,
+    is_approved BOOLEAN DEFAULT TRUE,
+>>>>>>> theirs
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+<<<<<<< mine
+CREATE TABLE post_tags (
+    post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+    tag_id INTEGER REFERENCES tags(id) ON DELETE CASCADE,
+    PRIMARY KEY (post_id, tag_id)
+);
+
+CREATE INDEX idx_users_username ON users(username);
+CREATE INDEX idx_users_email ON users(email);
+||||||| original
+=======
+CREATE TABLE likes (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
+    post_id INTEGER REFERENCES posts(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, post_id)
+);
+
+>>>>>>> theirs
+CREATE INDEX idx_posts_user_id ON posts(user_id);
+<<<<<<< mine
+CREATE INDEX idx_posts_status ON posts(status);
+CREATE INDEX idx_comments_post_id ON comments(post_id);
+CREATE INDEX idx_comments_user_id ON comments(user_id);
+||||||| original
+CREATE INDEX idx_comments_post_id ON comments(post_id);
+=======
+CREATE INDEX idx_posts_category_id ON posts(category_id);
+CREATE INDEX idx_posts_slug ON posts(slug);
+CREATE INDEX idx_comments_post_id ON comments(post_id);
+CREATE INDEX idx_likes_post_id ON likes(post_id);
+>>>>>>> theirs
