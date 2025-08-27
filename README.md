@@ -5,6 +5,9 @@
 
 Git-style 3-way string merging using proven algorithms from libgit2/xdiff.
 
+[![Crates.io](https://img.shields.io/crates/v/threeway_merge.svg)](https://crates.io/crates/threeway_merge)
+[![Documentation](https://docs.rs/threeway_merge/badge.svg)](https://docs.rs/threeway_merge)
+[![Downloads](https://img.shields.io/crates/d/threeway_merge.svg)](https://crates.io/crates/threeway_merge)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Rust](https://img.shields.io/badge/rust-1.88.0+-orange.svg?logo=rust)](https://www.rust-lang.org/)
 
