@@ -1,10 +1,23 @@
 [package]
 name = "threeway_merge"
 version = "0.1.0"
-description = "Git-style 3-way merge. "
+description = "Git-style 3-way string merging using proven algorithms from libgit2/xdiff."
 authors = [
     "Levi Lim <shiueo.csh@gmail.com>",
 ]
+license = "MIT"
+repository = "https://github.com/levish0/threeway-merge-rs"
+homepage = "https://github.com/levish0/threeway-merge-rs"
+documentation = "https://docs.rs/threeway_merge"
+readme = "README.md"
+keywords = ["merge", "diff", "git", "text", "conflict"]
+categories = ["text-processing", "algorithms", "development-tools"]
+exclude = [
+    "assets/",
+    "examples/",
+    "tests/scenarios/",
+]
+
 edition = "2024"
 rust-version = "1.88.0"
 
