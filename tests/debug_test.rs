@@ -1,4 +1,4 @@
-use threeway_merge_rs::{merge_strings, MergeOptions};
+use threeway_merge_rs::{MergeOptions, merge_strings};
 
 #[test]
 fn debug_no_conflict_merge() {
@@ -7,10 +7,10 @@ fn debug_no_conflict_merge() {
     let theirs = "line1\nline2\nline3\nline4";
 
     let result = merge_strings(base, ours, theirs, &MergeOptions::default()).unwrap();
-    
+
     println!("Result content: {:?}", result.content);
     println!("Conflicts: {}", result.conflicts);
-    
+
     // Just check that it doesn't crash for now
     assert!(result.content.contains("line1"));
 }

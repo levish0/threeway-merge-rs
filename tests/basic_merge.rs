@@ -1,4 +1,4 @@
-use threeway_merge_rs::{merge_strings, MergeOptions};
+use threeway_merge_rs::{MergeOptions, merge_strings};
 
 #[test]
 fn test_conflicting_merge() {
@@ -7,7 +7,7 @@ fn test_conflicting_merge() {
     let theirs = "Hello beautiful world";
 
     let result = merge_strings(base, ours, theirs, &MergeOptions::default()).unwrap();
-    
+
     println!("=== Conflicting Merge Test ===");
     println!("Base: {}", base);
     println!("Ours: {}", ours);
@@ -15,7 +15,7 @@ fn test_conflicting_merge() {
     println!("Result conflicts: {}", result.conflicts);
     println!("Result content:\n{}", result.content);
     println!("---");
-    
+
     assert!(result.conflicts > 0);
     assert!(result.content.contains("<<<<<<<"));
     assert!(result.content.contains("======="));
@@ -31,7 +31,7 @@ fn test_simple_conflict() {
     let theirs = "line1\ntheirs\nline3";
 
     let result = merge_strings(base, ours, theirs, &MergeOptions::default()).unwrap();
-    
+
     assert!(result.conflicts > 0);
     assert!(result.content.contains("<<<<<<<"));
     assert!(result.content.contains("======="));
@@ -45,7 +45,7 @@ fn test_identical_changes() {
     let theirs = "Hello Rust world";
 
     let result = merge_strings(base, ours, theirs, &MergeOptions::default()).unwrap();
-    
+
     assert_eq!(result.conflicts, 0);
     assert_eq!(result.content, "Hello Rust world");
 }
@@ -57,14 +57,14 @@ fn test_no_conflict_merge() {
     let theirs = "line1\nline2\nline3\nline4";
 
     let result = merge_strings(base, ours, theirs, &MergeOptions::default()).unwrap();
-    
+
     println!("=== No Conflict Merge Test ===");
     println!("Base: {:?}", base);
     println!("Ours: {:?}", ours);
     println!("Theirs: {:?}", theirs);
     println!("Result conflicts: {}", result.conflicts);
     println!("Result content: {:?}", result.content);
-    
+
     // This merge might result in conflict due to xdiff implementation
     // Just verify it doesn't crash and produces valid output
     assert!(!result.content.is_empty());
@@ -75,7 +75,7 @@ fn test_no_conflict_merge() {
 #[test]
 fn test_empty_strings() {
     let result = merge_strings("", "", "", &MergeOptions::default()).unwrap();
-    
+
     assert_eq!(result.conflicts, 0);
     assert_eq!(result.content, "");
 }

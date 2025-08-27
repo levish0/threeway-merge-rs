@@ -1,4 +1,4 @@
-use threeway_merge_rs::{merge_strings, MergeOptions, DiffAlgorithm, MergeStyle, MergeFavor};
+use threeway_merge_rs::{DiffAlgorithm, MergeFavor, MergeOptions, MergeStyle, merge_strings};
 
 #[test]
 fn test_different_algorithms() {
@@ -7,7 +7,7 @@ fn test_different_algorithms() {
     let theirs = "line1\nline2\nline3\nchanged4\nline5";
 
     println!("=== Testing Different Algorithms ===");
-    
+
     // Myers algorithm (default)
     let mut options = MergeOptions::default();
     options.algorithm = DiffAlgorithm::Myers;
@@ -55,7 +55,7 @@ fn test_merge_styles() {
     let theirs = "Hello beautiful world";
 
     println!("=== Testing Different Merge Styles ===");
-    
+
     // Normal style
     let mut options = MergeOptions::default();
     options.style = MergeStyle::Normal;
@@ -93,7 +93,7 @@ fn test_merge_favor() {
     let theirs = "Hello beautiful world";
 
     println!("=== Testing Merge Favor Options ===");
-    
+
     // No favor (conflicts)
     let mut options = MergeOptions::default();
     options.favor = None;
@@ -140,18 +140,18 @@ fn test_custom_labels() {
     let theirs = "Hello beautiful world";
 
     println!("=== Testing Custom Labels ===");
-    
+
     let mut options = MergeOptions::default();
     options.ancestor_label = Some("BASE".to_string());
     options.ours_label = Some("OURS".to_string());
     options.theirs_label = Some("THEIRS".to_string());
     options.marker_size = 10;
-    
+
     let result = merge_strings(base, ours, theirs, &options).unwrap();
     println!("With Custom Labels:");
     println!("Conflicts: {}", result.conflicts);
     println!("Content:\n{}", result.content);
-    
+
     assert!(result.conflicts > 0);
     // Labels might not appear in libgit2/xdiff output format
     // Just verify the merge worked and produced conflict markers
