@@ -26,7 +26,7 @@ It uses **libgit2/xdiff** via safe FFI bindings, providing the same merge behavi
 
 - **String-based API**: Works with `&str` inputs, no file I/O required
 - **Git-compatible**: 100% identical results to `git merge-file` (576+ test combinations)
-- **Memory safe**: Safe Rust wrapper around battle-tested C library
+- **Memory safe**: Safe Rust wrapper with proper FFI memory management
 - **Conflict detection**: Automatic conflict counting and detailed output
 - **Zero runtime dependencies**: C library compiled at build time
 - **Comprehensive testing**: Multi-language scenarios with complex merge cases
