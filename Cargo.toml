@@ -1,0 +1,11 @@
+[package]
+name = "threeway-merge-rs"
+version = "0.1.0"
+description = "Git-style 3-way merge. "
+authors = [
+    "Levi Lim <shiueo.csh@gmail.com>",
+]
+edition = "2024"
+rust-version = "1.88.0"
+
+[dependencies]
