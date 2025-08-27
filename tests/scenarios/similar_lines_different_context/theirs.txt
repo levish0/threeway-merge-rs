@@ -1,0 +1,30 @@
+# API Configuration
+API_HOST = "localhost"
+API_PORT = 8080
+API_VERSION = "v1"
+
+# Database Configuration  
+DB_HOST = "localhost"
+DB_PORT = 5433
+DB_NAME = "test_db"
+
+# Cache Configuration
+CACHE_HOST = "localhost"
+CACHE_PORT = 6380
+CACHE_TTL = 1800
+
+# New monitoring configuration
+MONITOR_HOST = "localhost"
+MONITOR_PORT = 9000
+
+def get_api_url():
+    return f"http://{API_HOST}:{API_PORT}/{API_VERSION}"
+
+def get_db_connection():
+    return f"postgresql://{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+def get_cache_url():
+    return f"redis://{CACHE_HOST}:{CACHE_PORT}"
+
+def get_monitor_url():
+    return f"http://{MONITOR_HOST}:{MONITOR_PORT}"

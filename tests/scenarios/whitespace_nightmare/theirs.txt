@@ -1,0 +1,34 @@
+def calculate_metrics(data):
+	"""Calculate various metrics from data"""
+	total = sum(data)
+	count = len(data)
+	average = total / count if count > 0 else 0
+	
+	# Calculate additional statistical measures
+	sorted_data = sorted(data)
+	median_idx = count // 2
+	median = sorted_data[median_idx] if count % 2 == 1 else (sorted_data[median_idx-1] + sorted_data[median_idx]) / 2
+	
+	return {
+		'total': total,
+		'count': count, 
+		'average': average,
+		'median': median
+	}
+
+class MetricsCalculator:
+	def __init__(self):
+		self.history = []
+	
+	def add_calculation(self, data):
+		result = calculate_metrics(data)
+		self.history.append(result)
+		return result
+	
+	def get_history_summary(self):
+		if not self.history:
+			return None
+		return {
+			'total_calculations': len(self.history),
+			'avg_total': sum(h['total'] for h in self.history) / len(self.history)
+		}

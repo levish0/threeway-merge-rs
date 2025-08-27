@@ -1,0 +1,38 @@
+function processData(input) {
+    // Enhanced implementation with validation
+    if (!Array.isArray(input)) {
+        throw new Error('Input must be an array');
+    }
+    
+    let result = [];
+    
+    for (let i = 0; i < input.length; i++) {
+        if (input[i] > 0) {
+            result.push(input[i] * 2);
+        }
+    }
+    
+    return result;
+}
+
+class DataProcessor {
+    constructor(options = {}) {
+        this.threshold = options.threshold || 0;
+        this.multiplier = options.multiplier || 2;
+        this.validateInput = options.validateInput !== false;
+    }
+    
+    process(data) {
+        if (this.validateInput && !Array.isArray(data)) {
+            throw new Error('Data must be an array');
+        }
+        return processData(data);
+    }
+    
+    // New method for batch processing
+    processBatch(batches) {
+        return batches.map(batch => this.process(batch));
+    }
+}
+
+export default DataProcessor;

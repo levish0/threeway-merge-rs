@@ -1,0 +1,25 @@
+function processData(input) {
+    // Original implementation
+    let result = [];
+    
+    for (let i = 0; i < input.length; i++) {
+        if (input[i] > 0) {
+            result.push(input[i] * 2);
+        }
+    }
+    
+    return result;
+}
+
+class DataProcessor {
+    constructor(options = {}) {
+        this.threshold = options.threshold || 0;
+        this.multiplier = options.multiplier || 2;
+    }
+    
+    process(data) {
+        return processData(data);
+    }
+}
+
+export default DataProcessor;

@@ -1,0 +1,31 @@
+function processData(input) {
+    // Optimized implementation with different approach
+    let result = [];
+    
+    // Use filter and map for better performance
+    result = input.filter(item => item > 0).map(item => item * 2);
+    
+    return result;
+}
+
+class DataProcessor {
+    constructor(options = {}) {
+        this.threshold = options.threshold || 0;
+        this.multiplier = options.multiplier || 2;
+        this.useOptimized = options.useOptimized || true;
+    }
+    
+    process(data) {
+        if (this.useOptimized) {
+            return data.filter(item => item > this.threshold).map(item => item * this.multiplier);
+        }
+        return processData(data);
+    }
+    
+    // New method for processing with custom threshold
+    processWithThreshold(data, customThreshold) {
+        return data.filter(item => item > customThreshold).map(item => item * this.multiplier);
+    }
+}
+
+export default DataProcessor;

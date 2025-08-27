@@ -35,7 +35,7 @@ pub struct MergeOptions {
     pub algorithm: DiffAlgorithm,
     pub marker_size: usize,
     pub level: MergeLevel,
-    pub ancestor_label: Option<String>,
+    pub base_label: Option<String>,
     pub ours_label: Option<String>,
     pub theirs_label: Option<String>,
 }
@@ -48,7 +48,7 @@ impl Default for MergeOptions {
             algorithm: DiffAlgorithm::Myers,
             marker_size: 7,
             level: MergeLevel::ZealousAlnum,
-            ancestor_label: None,
+            base_label: None,
             ours_label: None,
             theirs_label: None,
         }

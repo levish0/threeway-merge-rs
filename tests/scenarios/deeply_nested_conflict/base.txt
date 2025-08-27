@@ -1,0 +1,45 @@
+struct Config {
+    database: DatabaseConfig,
+    server: ServerConfig,
+    logging: LoggingConfig,
+}
+
+struct DatabaseConfig {
+    host: String,
+    port: u16,
+    database: String,
+    max_connections: u32,
+}
+
+struct ServerConfig {
+    host: String,
+    port: u16,
+    workers: usize,
+}
+
+struct LoggingConfig {
+    level: String,
+    file: String,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            database: DatabaseConfig {
+                host: "localhost".to_string(),
+                port: 5432,
+                database: "myapp".to_string(),
+                max_connections: 10,
+            },
+            server: ServerConfig {
+                host: "0.0.0.0".to_string(),
+                port: 8080,
+                workers: 4,
+            },
+            logging: LoggingConfig {
+                level: "info".to_string(),
+                file: "app.log".to_string(),
+            },
+        }
+    }
+}

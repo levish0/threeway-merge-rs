@@ -1,0 +1,26 @@
+# API Configuration
+API_HOST = "api.production.com"
+API_PORT = 443
+API_VERSION = "v2"
+API_SSL = True
+
+# Database Configuration
+DB_HOST = "db.production.com"
+DB_PORT = 5432
+DB_NAME = "production_db"
+DB_POOL_SIZE = 20
+
+# Cache Configuration
+CACHE_HOST = "cache.production.com"
+CACHE_PORT = 6379
+CACHE_TTL = 7200
+
+def get_api_url():
+    protocol = "https" if API_SSL else "http"
+    return f"{protocol}://{API_HOST}:{API_PORT}/{API_VERSION}"
+
+def get_db_connection():
+    return f"postgresql://{DB_HOST}:{DB_PORT}/{DB_NAME}?pool_size={DB_POOL_SIZE}"
+
+def get_cache_url():
+    return f"redis://{CACHE_HOST}:{CACHE_PORT}"

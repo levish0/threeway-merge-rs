@@ -1,0 +1,28 @@
+def calculate_metrics(data):
+    """Calculate various metrics from data with validation"""
+    if not data:
+        return {'total': 0, 'count': 0, 'average': 0}
+        
+    total = sum(data)
+    count = len(data)
+    average = total / count if count > 0 else 0
+    
+    return {
+        'total': total,
+        'count': count, 
+        'average': average,
+        'min': min(data),
+        'max': max(data)
+    }
+
+class MetricsCalculator:
+    def __init__(self):
+        self.history = []
+        self.validation_enabled = True
+    
+    def add_calculation(self, data):
+        if self.validation_enabled and not isinstance(data, (list, tuple)):
+            raise ValueError("Data must be a list or tuple")
+        result = calculate_metrics(data)
+        self.history.append(result)
+        return result

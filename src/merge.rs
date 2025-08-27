@@ -30,12 +30,12 @@ pub fn merge_strings(
     options: &MergeOptions,
 ) -> Result<MergeResult, MergeError> {
     // Keep CStrings alive for the entire function
-    let ancestor_cstr = options
-        .ancestor_label
+    let base_cstr = options
+        .base_label
         .as_ref()
         .map(|s| CString::new(s.as_str()))
         .transpose()
-        .map_err(|_| MergeError::InvalidInput("Invalid ancestor label".to_string()))?;
+        .map_err(|_| MergeError::InvalidInput("Invalid base label".to_string()))?;
 
     let file1_cstr = options
         .ours_label
@@ -91,7 +91,7 @@ pub fn merge_strings(
         level,
         favor,
         style,
-        ancestor: ancestor_cstr.as_ref().map_or(ptr::null(), |s| s.as_ptr()),
+        ancestor: base_cstr.as_ref().map_or(ptr::null(), |s| s.as_ptr()),
         file1: file1_cstr.as_ref().map_or(ptr::null(), |s| s.as_ptr()),
         file2: file2_cstr.as_ref().map_or(ptr::null(), |s| s.as_ptr()),
     };

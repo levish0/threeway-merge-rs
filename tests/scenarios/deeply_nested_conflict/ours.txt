@@ -1,0 +1,61 @@
+struct Config {
+    database: DatabaseConfig,
+    server: ServerConfig,
+    logging: LoggingConfig,
+    security: SecurityConfig,
+}
+
+struct DatabaseConfig {
+    host: String,
+    port: u16,
+    database: String,
+    max_connections: u32,
+    connection_timeout: u64,
+}
+
+struct ServerConfig {
+    host: String,
+    port: u16,
+    workers: usize,
+    request_timeout: u64,
+}
+
+struct LoggingConfig {
+    level: String,
+    file: String,
+    rotate: bool,
+}
+
+struct SecurityConfig {
+    jwt_secret: String,
+    cors_enabled: bool,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            database: DatabaseConfig {
+                host: "localhost".to_string(),
+                port: 5432,
+                database: "myapp".to_string(),
+                max_connections: 20,
+                connection_timeout: 30,
+            },
+            server: ServerConfig {
+                host: "127.0.0.1".to_string(),
+                port: 8080,
+                workers: 8,
+                request_timeout: 60,
+            },
+            logging: LoggingConfig {
+                level: "debug".to_string(),
+                file: "app.log".to_string(),
+                rotate: true,
+            },
+            security: SecurityConfig {
+                jwt_secret: "default-secret".to_string(),
+                cors_enabled: true,
+            },
+        }
+    }
+}

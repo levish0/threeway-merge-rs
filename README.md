@@ -98,6 +98,7 @@ let mut options = MergeOptions::default();
 options.algorithm = DiffAlgorithm::Histogram;
 options.style = MergeStyle::ZealousDiff3;
 options.favor = Some(MergeFavor::Ours);
+options.base_label = Some("original".to_string());
 options.ours_label = Some("mine".to_string());
 options.theirs_label = Some("theirs".to_string());
 options.marker_size = 10;

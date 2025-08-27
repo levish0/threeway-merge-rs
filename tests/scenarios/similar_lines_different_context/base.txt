@@ -1,0 +1,23 @@
+# API Configuration
+API_HOST = "localhost"
+API_PORT = 8000
+API_VERSION = "v1"
+
+# Database Configuration
+DB_HOST = "localhost"
+DB_PORT = 5432
+DB_NAME = "app_db"
+
+# Cache Configuration
+CACHE_HOST = "localhost"
+CACHE_PORT = 6379
+CACHE_TTL = 3600
+
+def get_api_url():
+    return f"http://{API_HOST}:{API_PORT}/{API_VERSION}"
+
+def get_db_connection():
+    return f"postgresql://{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+def get_cache_url():
+    return f"redis://{CACHE_HOST}:{CACHE_PORT}"

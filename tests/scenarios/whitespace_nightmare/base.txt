@@ -1,0 +1,20 @@
+def calculate_metrics(data):
+    """Calculate various metrics from data"""
+    total = sum(data)
+    count = len(data)
+    average = total / count if count > 0 else 0
+    
+    return {
+        'total': total,
+        'count': count, 
+        'average': average
+    }
+
+class MetricsCalculator:
+    def __init__(self):
+        self.history = []
+    
+    def add_calculation(self, data):
+        result = calculate_metrics(data)
+        self.history.append(result)
+        return result

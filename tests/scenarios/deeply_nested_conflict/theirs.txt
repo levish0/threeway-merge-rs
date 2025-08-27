@@ -1,0 +1,61 @@
+struct Config {
+    database: DatabaseConfig,
+    server: ServerConfig,
+    logging: LoggingConfig,
+    cache: CacheConfig,
+}
+
+struct DatabaseConfig {
+    host: String,
+    port: u16,
+    database: String,
+    max_connections: u32,
+    ssl_enabled: bool,
+}
+
+struct ServerConfig {
+    bind_address: String,
+    port: u16,
+    workers: usize,
+    keep_alive: bool,
+}
+
+struct LoggingConfig {
+    level: String,
+    output: String,
+    format: String,
+}
+
+struct CacheConfig {
+    redis_url: String,
+    ttl: u64,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            database: DatabaseConfig {
+                host: "postgres".to_string(),
+                port: 5433,
+                database: "production".to_string(),
+                max_connections: 50,
+                ssl_enabled: true,
+            },
+            server: ServerConfig {
+                bind_address: "0.0.0.0".to_string(),
+                port: 9000,
+                workers: 16,
+                keep_alive: true,
+            },
+            logging: LoggingConfig {
+                level: "warn".to_string(),
+                output: "stdout".to_string(),
+                format: "json".to_string(),
+            },
+            cache: CacheConfig {
+                redis_url: "redis://localhost:6379".to_string(),
+                ttl: 3600,
+            },
+        }
+    }
+}
