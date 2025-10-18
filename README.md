@@ -175,9 +175,3 @@ cargo test -- --nocapture
 - **Contributors**: Everyone who improves `threeway-merge-rs`
 - **Davide Libenzi**: Original author of xdiff
 - **libgit2 team**: For maintaining the standalone xdiff version
-
----
-
-<div align="center">
-<b>Made with ♥️ and lots of ☕ by levish (Levi Lim) & Community</b>
-</div>
