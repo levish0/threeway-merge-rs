@@ -26,7 +26,7 @@ libc = "0.2.177"
 thiserror = "2.0.17"
 
 [build-dependencies]
-cc = { version = "1.2.41", features = ["parallel"] }
+cc = { version = "1.2.44", features = ["parallel"] }
 
 [dev-dependencies]
 tempfile = "3.23.0"
