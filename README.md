@@ -174,3 +174,26 @@ cargo test -- --nocapture
 - **Contributors**: Everyone who improves `threeway-merge-rs`
 - **Davide Libenzi**: Original author of xdiff
 - **libgit2 team**: For maintaining the standalone xdiff version
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
+
+### Third-Party Code: xdiff Library
+
+This crate statically links the **xdiff library** (located in `src/xdiff/`), which is licensed under the **GNU Lesser General Public License v2.1 or later (LGPL-2.1+)**.
+
+The xdiff code is used unmodified from [libgit2/xdiff](https://github.com/libgit2/xdiff).
+
+#### LGPL Compliance
+
+Per the LGPL requirements, users can relink this crate against a modified version of xdiff:
+
+1. Modify the C source code in `src/xdiff/`
+2. Rebuild the crate: `cargo build`
+
+All source code (including xdiff) is available in this repository, ensuring compliance with LGPL relinking requirements.
+
+See [`src/xdiff/COPYING`](src/xdiff/COPYING) for the full LGPL license text.

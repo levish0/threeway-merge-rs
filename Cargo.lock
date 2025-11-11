@@ -177,7 +177,7 @@ dependencies = [
 
 [[package]]
 name = "threeway_merge"
-version = "0.1.9"
+version = "0.1.10"
 dependencies = [
  "cc",
  "libc",
