@@ -1,6 +1,6 @@
 [package]
 name = "threeway_merge"
-version = "0.1.10"
+version = "0.1.11"
 description = "Git-style 3-way string merging using proven algorithms from libgit2/xdiff. Statically links xdiff (LGPL-2.1+)."
 authors = [
     "Levi Lim <shiueo.csh@gmail.com>",
