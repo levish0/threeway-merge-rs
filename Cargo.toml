@@ -1,6 +1,6 @@
 [package]
 name = "threeway_merge"
-version = "0.1.12"
+version = "0.1.13"
 description = "Git-style 3-way string merging using proven algorithms from libgit2/xdiff. Statically links xdiff (LGPL-2.1+)."
 authors = [
     "Levi Lim <shiueo.csh@gmail.com>",
@@ -27,7 +27,7 @@ libc = "0.2.177"
 thiserror = "2.0.17"
 
 [build-dependencies]
-cc = { version = "1.2.49", features = ["parallel"] }
+cc = { version = "1.2.50", features = ["parallel"] }
 
 [dev-dependencies]
 tempfile = "3.23.0"
