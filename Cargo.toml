@@ -30,5 +30,5 @@ thiserror = "2.0.17"
 cc = { version = "1.2.50", features = ["parallel"] }
 
 [dev-dependencies]
-tempfile = "3.23.0"
+tempfile = "3.24.0"
 
