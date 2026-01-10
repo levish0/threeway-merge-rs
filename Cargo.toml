@@ -2,9 +2,7 @@
 name = "threeway_merge"
 version = "0.1.14"
 description = "Git-style 3-way string merging using proven algorithms from libgit2/xdiff. Statically links xdiff (LGPL-2.1+)."
-authors = [
-    "Levi Lim <shiueo.csh@gmail.com>",
-]
+authors = ["Levi Laine <shiueo.csh@gmail.com>"]
 license = "MIT"
 license-file = "LICENSE"
 repository = "https://github.com/levish0/threeway-merge-rs"
