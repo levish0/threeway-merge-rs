@@ -21,7 +21,7 @@ edition = "2024"
 rust-version = "1.88.0"
 
 [dependencies]
-libc = "0.2.178"
+libc = "0.2.180"
 thiserror = "2.0.17"
 
 [build-dependencies]
