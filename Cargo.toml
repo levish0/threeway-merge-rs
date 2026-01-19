@@ -22,7 +22,7 @@ rust-version = "1.88.0"
 
 [dependencies]
 libc = "0.2.178"
-thiserror = "2.0.17"
+thiserror = "2.0.18"
 
 [build-dependencies]
 cc = { version = "1.2.51", features = ["parallel"] }
