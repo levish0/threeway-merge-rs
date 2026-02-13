@@ -4,11 +4,19 @@ use std::ffi::CString;
 use std::os::raw::{c_char, c_int, c_long, c_ulong};
 use std::ptr;
 
-fn string_to_mmfile(s: &str) -> MmFile {
-    MmFile {
+fn string_to_mmfile(s: &str, field: &str) -> Result<MmFile, MergeError> {
+    let size = c_long::try_from(s.len()).map_err(|_| {
+        MergeError::InvalidInput(format!(
+            "{} is too large for xdiff input size ({})",
+            field,
+            s.len()
+        ))
+    })?;
+
+    Ok(MmFile {
         ptr: s.as_ptr() as *mut c_char,
-        size: s.len() as c_long,
-    }
+        size,
+    })
 }
 
 
@@ -68,6 +76,13 @@ pub fn merge_strings(
         MergeStyle::ZealousDiff3 => ffi::XDL_MERGE_ZEALOUS_DIFF3,
     };
 
+    let marker_size = c_int::try_from(options.marker_size).map_err(|_| {
+        MergeError::InvalidInput(format!(
+            "marker_size ({}) exceeds supported range",
+            options.marker_size
+        ))
+    })?;
+
     let xmp = XmpParam {
         xpp: XppParam {
             flags,
@@ -76,7 +91,7 @@ pub fn merge_strings(
             anchors: ptr::null_mut(),
             anchors_nr: 0,
         },
-        marker_size: options.marker_size as c_int,
+        marker_size,
         level,
         favor,
         style,
@@ -85,9 +100,9 @@ pub fn merge_strings(
         file2: file2_cstr.as_ref().map_or(ptr::null(), |s| s.as_ptr()),
     };
 
-    let base_mmf = string_to_mmfile(base);
-    let ours_mmf = string_to_mmfile(ours);
-    let theirs_mmf = string_to_mmfile(theirs);
+    let base_mmf = string_to_mmfile(base, "base")?;
+    let ours_mmf = string_to_mmfile(ours, "ours")?;
+    let theirs_mmf = string_to_mmfile(theirs, "theirs")?;
 
     let mut result = MmBuffer {
         ptr: ptr::null_mut(),
@@ -104,14 +119,33 @@ pub fn merge_strings(
     }
 
     if result.ptr.is_null() {
-        return Ok(MergeResult {
-            content: String::new(),
-            conflicts: 0,
-        });
+        if result.size == 0 {
+            return Ok(MergeResult {
+                content: String::new(),
+                conflicts: ret as usize,
+            });
+        }
+        return Err(MergeError::Internal(format!(
+            "xdl_merge returned null buffer with non-zero size ({})",
+            result.size
+        )));
     }
 
+    let result_size = match usize::try_from(result.size) {
+        Ok(size) => size,
+        Err(_) => {
+            unsafe {
+                libc::free(result.ptr as *mut libc::c_void);
+            }
+            return Err(MergeError::Internal(format!(
+                "xdl_merge returned invalid output size ({})",
+                result.size
+            )));
+        }
+    };
+
     let content = unsafe {
-        let slice = std::slice::from_raw_parts(result.ptr as *const u8, result.size as usize);
+        let slice = std::slice::from_raw_parts(result.ptr as *const u8, result_size);
         String::from_utf8_lossy(slice).into_owned()
     };
 

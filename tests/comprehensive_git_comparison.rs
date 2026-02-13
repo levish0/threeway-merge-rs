@@ -1,6 +1,6 @@
 use std::fs;
-use std::process::Command;
 use std::path::Path;
+use std::process::Command;
 use threeway_merge::*;
 
 // Test scenario from file system
@@ -9,6 +9,11 @@ struct TestScenario {
     base: String,
     ours: String,
     theirs: String,
+}
+
+struct GitMergeOutput {
+    content: String,
+    conflicts: usize,
 }
 
 fn load_test_scenarios() -> Result<Vec<TestScenario>, Box<dyn std::error::Error>> {
@@ -43,7 +48,16 @@ fn load_test_scenarios() -> Result<Vec<TestScenario>, Box<dyn std::error::Error>
         }
     }
     
+    scenarios.sort_by(|a, b| a.name.cmp(&b.name));
     Ok(scenarios)
+}
+
+fn ensure_git_available() -> Result<(), Box<dyn std::error::Error>> {
+    let output = Command::new("git").arg("--version").output()?;
+    if !output.status.success() {
+        return Err(std::io::Error::other("git is installed but not runnable").into());
+    }
+    Ok(())
 }
 
 fn git_merge_file(
@@ -54,7 +68,7 @@ fn git_merge_file(
     _level: MergeLevel,
     favor: Option<MergeFavor>,
     style: MergeStyle,
-) -> Result<String, Box<dyn std::error::Error>> {
+) -> Result<GitMergeOutput, Box<dyn std::error::Error>> {
     let temp_dir = tempfile::tempdir()?;
     let base_path = temp_dir.path().join("base.txt");
     let ours_path = temp_dir.path().join("ours.txt");
@@ -103,33 +117,34 @@ fn git_merge_file(
        .arg("--stdout");
     
     let output = cmd.output()?;
-    Ok(String::from_utf8_lossy(&output.stdout).to_string())
+    let status_code = output.status.code().unwrap_or(-1);
+    let conflicts = match status_code {
+        0..=127 => status_code as usize,
+        _ => {
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            return Err(format!(
+                "git merge-file failed with status {}: {}",
+                status_code,
+                stderr.trim()
+            )
+            .into());
+        }
+    };
+
+    Ok(GitMergeOutput {
+        content: String::from_utf8_lossy(&output.stdout).to_string(),
+        conflicts,
+    })
 }
 
 fn normalize_output(output: &str) -> String {
-    // Normalize line endings, trailing whitespace, and conflict marker labels
-    output.lines()
-        .map(|line| {
-            let trimmed = line.trim_end();
-            // Normalize conflict markers by removing file path labels
-            if trimmed.starts_with("<<<<<<<") {
-                "<<<<<<<".to_string()
-            } else if trimmed.starts_with(">>>>>>>") {
-                ">>>>>>>".to_string()
-            } else if trimmed.starts_with("|||||||") {
-                "|||||||".to_string()
-            } else {
-                trimmed.to_string()
-            }
-        })
-        .collect::<Vec<_>>()
-        .join("\n")
-        .trim_end()
-        .to_string()
+    // Keep comparison strict and only normalize platform line-endings.
+    output.replace("\r\n", "\n")
 }
 
 #[test]
 fn test_comprehensive_git_comparison() {
+    ensure_git_available().expect("git is required for comprehensive compatibility tests");
     let scenarios = load_test_scenarios().expect("Failed to load test scenarios");
     println!("Loaded {} test scenarios", scenarios.len());
     
@@ -160,7 +175,7 @@ fn test_comprehensive_git_comparison() {
     ];
     
     let mut total_tests = 0;
-    let mut passing_tests = 0;
+    let mut passing_tests = 0usize;
     let mut failing_tests = Vec::new();
     
     for scenario in &scenarios {
@@ -201,13 +216,14 @@ fn test_comprehensive_git_comparison() {
                         match (our_result, git_result) {
                             (Ok(our), Ok(git)) => {
                                 let our_normalized = normalize_output(&our.content);
-                                let git_normalized = normalize_output(&git);
+                                let git_normalized = normalize_output(&git.content);
+                                let conflict_match = our.conflicts == git.conflicts;
                                 
-                                if our_normalized == git_normalized {
+                                if our_normalized == git_normalized && conflict_match {
                                     passing_tests += 1;
                                 } else {
                                     let test_name = format!(
-                                        "{}_{:?}_{:?}_{:?}_{:?}_content_mismatch",
+                                        "{}_{:?}_{:?}_{:?}_{:?}_mismatch",
                                         &scenario.name, algorithm, level, favor, style
                                     );
                                     failing_tests.push(test_name);
@@ -217,6 +233,11 @@ fn test_comprehensive_git_comparison() {
                                         println!("\n=== MISMATCH: {} ===", &scenario.name);
                                         println!("Algorithm: {:?}, Level: {:?}, Favor: {:?}, Style: {:?}", 
                                                algorithm, level, favor, style);
+                                        println!(
+                                            "Conflict count - ours: {}, git: {}",
+                                            our.conflicts,
+                                            git.conflicts
+                                        );
                                         let our_preview = our_normalized.lines().take(3).collect::<Vec<_>>().join("\\n");
                                         let git_preview = git_normalized.lines().take(3).collect::<Vec<_>>().join("\\n");
                                         println!("Our output: {}...", our_preview);
@@ -225,10 +246,15 @@ fn test_comprehensive_git_comparison() {
                                     }
                                 }
                             },
-                            (Ok(_our), Err(_git_err)) => {
-                                // Git command failed, but ours succeeded - this might be expected
-                                // for some combinations Git doesn't support
-                                passing_tests += 1;
+                            (Ok(_our), Err(git_err)) => {
+                                let test_name = format!(
+                                    "{}_{:?}_{:?}_{:?}_{:?}_git_error",
+                                    &scenario.name, algorithm, level, favor, style
+                                );
+                                failing_tests.push(test_name);
+                                if failing_tests.len() <= 3 {
+                                    println!("Git invocation failed: {}", git_err);
+                                }
                             },
                             (Err(our_err), Ok(_git)) => {
                                 let test_name = format!(
@@ -240,9 +266,15 @@ fn test_comprehensive_git_comparison() {
                                     println!("Our implementation failed: {:?}", our_err);
                                 }
                             },
-                            (Err(_our_err), Err(_git_err)) => {
-                                // Both failed - might be expected for invalid combinations
-                                passing_tests += 1;
+                            (Err(our_err), Err(git_err)) => {
+                                let test_name = format!(
+                                    "{}_{:?}_{:?}_{:?}_{:?}_both_error",
+                                    &scenario.name, algorithm, level, favor, style
+                                );
+                                failing_tests.push(test_name);
+                                if failing_tests.len() <= 3 {
+                                    println!("Both failed. ours: {:?}, git: {}", our_err, git_err);
+                                }
                             },
                         }
                     }
@@ -270,14 +302,10 @@ fn test_comprehensive_git_comparison() {
         }
     }
     
-    // We'll allow some failures as Git and libgit2/xdiff may have differences
-    // But we want at least 90% compatibility for file-based scenarios
-    let success_rate = (passing_tests as f64 / total_tests as f64) * 100.0;
-    assert!(success_rate >= 85.0, 
-            "Success rate ({:.1}%) is below 85%. Too many incompatibilities with Git.\n\
-            Scenarios tested: {}\n\
-            Total test combinations: {}\n\
-            Passing tests: {}\n\
-            Failing tests: {}", 
-            success_rate, scenarios.len(), total_tests, passing_tests, failing_tests.len());
+    assert!(
+        failing_tests.is_empty(),
+        "Found {} incompatible cases out of {} combinations",
+        failing_tests.len(),
+        total_tests
+    );
 }

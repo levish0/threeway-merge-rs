@@ -147,6 +147,15 @@ cargo test test_comprehensive_git_comparison
 cargo test -- --nocapture
 ```
 
+### Publishing (Maintainers)
+```bash
+# Validate publish artifacts without uploading
+cargo xtask publish-dry
+
+# Publish to crates.io
+cargo xtask publish
+```
+
 ### Performance
 - **Zero allocation** for simple merges
 - **Memory efficient** with automatic C memory cleanup

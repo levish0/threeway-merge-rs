@@ -5,7 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.15] - 2026-02-13
+
+### Changed
+- Improved Git compatibility tests to avoid false positives:
+  - Added a Git availability pre-check
+  - Interpreted `git merge-file` exit codes as conflict counts (0..=127)
+  - Removed pass-on-error branches for Git invocation failures
+  - Tightened output normalization to line-ending normalization only
+  - Upgraded assertion criteria to require zero failing compatibility cases
+
+### Fixed
+- Hardened FFI boundary handling in `merge_strings`:
+  - Added checked conversions for input sizes (`usize` -> `c_long`)
+  - Added checked conversion for `marker_size` (`usize` -> `c_int`)
+  - Added explicit guards for invalid C result buffer states
+
+### Added
+- Added regression tests for input validation:
+  - Reject labels containing NUL bytes
+  - Reject `marker_size` values above `c_int::MAX`
+
+### Metadata
+- Removed `license-file` from `Cargo.toml` and kept SPDX `license = "MIT"` to eliminate Cargo license metadata warnings.
 
 ## [0.1.10] - 2025-01-11
 
