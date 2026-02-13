@@ -26,7 +26,7 @@ members = ["xtask"]
 resolver = "3"
 
 [dependencies]
-libc = "0.2.181"
+libc = "0.2.182"
 thiserror = "2.0.18"
 
 [build-dependencies]
