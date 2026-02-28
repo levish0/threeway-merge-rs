@@ -1,4 +1,4 @@
-use std::process::{exit, Command};
+use std::process::{Command, exit};
 use std::thread::sleep;
 use std::time::Duration;
 

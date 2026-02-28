@@ -19,7 +19,6 @@ fn string_to_mmfile(s: &str, field: &str) -> Result<MmFile, MergeError> {
     })
 }
 
-
 pub fn merge_strings(
     base: &str,
     ours: &str,
@@ -82,6 +81,26 @@ pub fn merge_strings(
             options.marker_size
         ))
     })?;
+
+    // Fast paths for obvious clean-merge outcomes.
+    if ours == theirs {
+        return Ok(MergeResult {
+            content: ours.to_owned(),
+            conflicts: 0,
+        });
+    }
+    if ours == base {
+        return Ok(MergeResult {
+            content: theirs.to_owned(),
+            conflicts: 0,
+        });
+    }
+    if theirs == base {
+        return Ok(MergeResult {
+            content: ours.to_owned(),
+            conflicts: 0,
+        });
+    }
 
     let xmp = XmpParam {
         xpp: XppParam {

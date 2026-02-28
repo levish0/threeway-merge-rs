@@ -1,5 +1,5 @@
 use std::fs;
-use threeway_merge::{DiffAlgorithm, MergeOptions, MergeStyle, merge_strings, MergeFavor};
+use threeway_merge::{DiffAlgorithm, MergeFavor, MergeOptions, MergeStyle, merge_strings};
 
 fn main() {
     // Example equivalent to:

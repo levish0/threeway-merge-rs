@@ -1,4 +1,4 @@
-use threeway_merge::{merge_strings, MergeError, MergeOptions};
+use threeway_merge::{MergeError, MergeOptions, merge_strings};
 
 #[test]
 fn rejects_labels_with_nul_byte() {

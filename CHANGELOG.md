@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.16] - 2026-02-28
+
+### Changed
+- Improved merge performance for trivial clean-merge cases by adding early-return fast paths in `merge_strings`:
+  - Return `ours` immediately when `ours == theirs`
+  - Return `theirs` immediately when `ours == base`
+  - Return `ours` immediately when `theirs == base`
+- Kept existing input validation behavior unchanged (label NUL checks and `marker_size` range checks still run before merge execution).
+
 ## [0.1.15] - 2026-02-13
 
 ### Changed
