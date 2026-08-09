@@ -9,13 +9,15 @@ fn main() {
     let ours = fs::read_to_string("examples/ours.txt").expect("Failed to read ours.txt");
     let theirs = fs::read_to_string("examples/theirs.txt").expect("Failed to read theirs.txt");
 
-    let mut options = MergeOptions::default();
-    options.algorithm = DiffAlgorithm::Histogram;
-    options.style = MergeStyle::ZealousDiff3;
-    options.favor = Some(MergeFavor::Union);
-    options.base_label = Some("original".to_string());
-    options.ours_label = Some("mine".to_string());
-    options.theirs_label = Some("theirs".to_string());
+    let options = MergeOptions {
+        algorithm: DiffAlgorithm::Histogram,
+        style: MergeStyle::ZealousDiff3,
+        favor: Some(MergeFavor::Union),
+        base_label: Some("original".to_string()),
+        ours_label: Some("mine".to_string()),
+        theirs_label: Some("theirs".to_string()),
+        ..MergeOptions::default()
+    };
 
     match merge_strings(&base, &ours, &theirs, &options) {
         Ok(result) => {

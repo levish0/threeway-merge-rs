@@ -24,10 +24,10 @@ It uses **libgit2/xdiff** via safe FFI bindings, providing the same merge behavi
 ## ✨ Features
 
 - **String-based API**: Works with `&str` inputs, no file I/O required
-- **Git-compatible**: 100% identical results to `git merge-file` (576+ test combinations)
-- **Memory safe**: Safe Rust wrapper with proper FFI memory management
+- **Git-compatible**: Validated against `git merge-file` across 624 test combinations
+- **Hardened FFI boundary**: Bounded native inputs and paired xdiff memory management
 - **Conflict detection**: Automatic conflict counting and detailed output
-- **Zero runtime dependencies**: C library compiled at build time
+- **No external native dependency**: xdiff is compiled and statically linked at build time
 - **Comprehensive testing**: Multi-language scenarios with complex merge cases
 
 ### Configurable Merge Options
@@ -97,14 +97,16 @@ use threeway_merge::{
     merge_strings, MergeOptions, DiffAlgorithm, MergeStyle, MergeFavor
 };
 
-let mut options = MergeOptions::default();
-options.algorithm = DiffAlgorithm::Histogram;
-options.style = MergeStyle::ZealousDiff3;
-options.favor = Some(MergeFavor::Union);
-options.base_label = Some("original".to_string());
-options.ours_label = Some("mine".to_string());
-options.theirs_label = Some("theirs".to_string());
-options.marker_size = 10;
+let options = MergeOptions {
+    algorithm: DiffAlgorithm::Histogram,
+    style: MergeStyle::ZealousDiff3,
+    favor: Some(MergeFavor::Union),
+    base_label: Some("original".to_string()),
+    ours_label: Some("mine".to_string()),
+    theirs_label: Some("theirs".to_string()),
+    marker_size: 10,
+    ..MergeOptions::default()
+};
 
 let result = merge_strings(base, ours, theirs, &options)?;
 ```
@@ -127,9 +129,9 @@ git merge-file --diff-algorithm histogram --zdiff3 \
 ## 🧪 Testing & Compatibility
 
 ### Git Compatibility
-This library achieves **100% compatibility** with `git merge-file` through comprehensive testing:
-- **576+ test combinations** across multiple scenarios
-- **12+ complex merge scenarios** including:
+This library continuously checks compatibility with `git merge-file`:
+- **624 test combinations** across multiple scenarios
+- **13 complex merge scenarios** including:
   - Multi-language text (Korean, Japanese, French)
   - Programming code (JavaScript, Rust, Python, SQL)
   - Whitespace edge cases and deeply nested conflicts
@@ -137,11 +139,11 @@ This library achieves **100% compatibility** with `git merge-file` through compr
 
 ### Running Tests
 ```bash
-# Run all tests
+# Run the fast, self-contained test suite
 cargo test
 
-# Run Git compatibility tests specifically
-cargo test test_comprehensive_git_comparison
+# Run the full compatibility matrix (requires Git)
+cargo test --test comprehensive_git_comparison -- --ignored
 
 # Run with output visible
 cargo test -- --nocapture
@@ -157,9 +159,9 @@ cargo xtask publish
 ```
 
 ### Performance
-- **Zero allocation** for simple merges
-- **Memory efficient** with automatic C memory cleanup
-- **Build-time compilation** - no runtime dependencies
+- Fast paths avoid native diff work for obvious clean merges
+- Native output buffers are released by the same allocator that created them
+- Build-time compilation avoids a separately installed xdiff library
 
 ---
 
@@ -167,7 +169,7 @@ cargo xtask publish
 
 - **Rust**: 1.88.0 or later (uses 2024 edition)
 - **C compiler**: For build-time compilation of xdiff library
-- **Git** (optional): For running compatibility tests
+- **Git** (optional): Only required for the ignored compatibility test matrix
 
 ---
 
@@ -188,21 +190,21 @@ cargo xtask publish
 
 ## 📜 License
 
-This project is licensed under the **MIT License**.
+The Rust wrapper is licensed under the **MIT License**.
 
 ### Third-Party Code: xdiff Library
 
 This crate statically links the **xdiff library** (located in `src/xdiff/`), which is licensed under the **GNU Lesser General Public License v2.1 or later (LGPL-2.1+)**.
 
-The xdiff code is used unmodified from [libgit2/xdiff](https://github.com/libgit2/xdiff).
+The vendored xdiff snapshot is derived from [libgit2/xdiff](https://github.com/libgit2/xdiff) and carries a small standalone portability patch recorded in [`src/xdiff/git-2.48.1.patch`](src/xdiff/git-2.48.1.patch).
 
 #### LGPL Compliance
 
-Per the LGPL requirements, users can relink this crate against a modified version of xdiff:
+The crate includes the xdiff source so users can modify it and rebuild the crate:
 
 1. Modify the C source code in `src/xdiff/`
 2. Rebuild the crate: `cargo build`
 
-All source code (including xdiff) is available in this repository, ensuring compliance with LGPL relinking requirements.
+Distributors of binaries that statically link this crate remain responsible for the applicable LGPL-2.1-or-later requirements, including the relinking provisions in section 6.
 
 See [`src/xdiff/COPYING`](src/xdiff/COPYING) for the full LGPL license text.

@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.20] - 2026-08-09
+
+### Changed
+- Isolated xdiff behind a primitive C shim and paired native deallocator.
+- Replaced lossy UTF-8 conversion with invariant-checked output handling.
+- Split the Git compatibility matrix from the fast default test suite.
+- Expanded compatibility coverage to 624 combinations across 13 scenarios.
+- Added Linux, Windows, macOS, MSRV, documentation, package, and strict Clippy CI jobs.
+
+### Fixed
+- Reject merge configurations whose conservative output bound can overflow xdiff's signed `int` size calculations.
+- Include examples, integration tests, and scenario fixtures in the published crate so its tests are self-contained.
+- Compare Git's default behavior with `ZealousAlnum` and cover punctuation-only conflict gaps.
+- Report the package's combined MIT and LGPL-2.1-or-later licensing in Cargo metadata.
+
 ## [0.1.19] - 2026-04-02
 Update build-dependency `cc` from 1.2.61 to 1.2.63
 

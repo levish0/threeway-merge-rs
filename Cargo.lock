@@ -176,10 +176,9 @@ dependencies = [
 
 [[package]]
 name = "threeway_merge"
-version = "0.1.19"
+version = "0.1.20"
 dependencies = [
  "cc",
- "libc",
  "tempfile",
  "thiserror",
 ]

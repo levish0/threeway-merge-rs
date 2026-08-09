@@ -12,13 +12,13 @@ fn main() {
     build.file("src/xdiff/xpatience.c");
     build.file("src/xdiff/xprepare.c");
     build.file("src/xdiff/xutils.c");
+    build.file("src/xdiff/threeway_merge_shim.c");
 
     // Suppress signed/unsigned comparison warnings
     build.flag_if_supported("-Wno-sign-compare");
 
     // Compile and link
-    build.compile("xdiff");
+    build.compile("threeway_merge_xdiff");
 
-    println!("cargo:rustc-link-lib=static=xdiff");
     println!("cargo:rerun-if-changed=src/xdiff/");
 }

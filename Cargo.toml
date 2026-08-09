@@ -1,22 +1,25 @@
 [package]
 name = "threeway_merge"
-version = "0.1.19"
-description = "Git-style 3-way string merging using proven algorithms from libgit2/xdiff. Statically links xdiff (LGPL-2.1+)."
+version = "0.1.20"
+description = "Git-style 3-way string merging using proven algorithms from libgit2/xdiff. Statically links xdiff (LGPL-2.1-or-later)."
 authors = ["Levi Laine <shiueo.csh@gmail.com>"]
-license = "MIT"
+license = "MIT AND LGPL-2.1-or-later"
 repository = "https://github.com/levish0/threeway-merge-rs"
 homepage = "https://github.com/levish0/threeway-merge-rs"
 documentation = "https://docs.rs/threeway_merge"
 readme = "README.md"
 keywords = ["merge", "diff", "git", "text", "conflict"]
 categories = ["text-processing", "algorithms", "development-tools"]
-exclude = [
-    "assets/",
-    "examples/",
-    "tests/scenarios/",
-    "xtask/",
-    ".cargo/",
+include = [
+    "/src/**",
+    "/examples/**",
+    "/tests/**",
+    "/build.rs",
+    "/CHANGELOG.md",
+    "/LICENSE",
+    "/README.md",
 ]
+links = "threeway_merge_xdiff"
 
 edition = "2024"
 rust-version = "1.88.0"
@@ -26,7 +29,6 @@ members = ["xtask"]
 resolver = "3"
 
 [dependencies]
-libc = "0.2.182"
 thiserror = "2.0.18"
 
 [build-dependencies]
@@ -34,4 +36,3 @@ cc = { version = "1.2.63", features = ["parallel"] }
 
 [dev-dependencies]
 tempfile = "3.27.0"
-

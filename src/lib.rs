@@ -11,13 +11,15 @@
 //! let ours = "Hello Rust world";  
 //! let theirs = "Hello beautiful world";
 //!
-//! let mut options = MergeOptions::default();
-//! options.algorithm = DiffAlgorithm::Histogram;
-//! options.style = MergeStyle::ZealousDiff3;
-//! options.favor = Some(MergeFavor::Union);
-//! options.base_label = Some("original".to_string());
-//! options.ours_label = Some("mine".to_string());
-//! options.theirs_label = Some("theirs".to_string());
+//! let options = MergeOptions {
+//!     algorithm: DiffAlgorithm::Histogram,
+//!     style: MergeStyle::ZealousDiff3,
+//!     favor: Some(MergeFavor::Union),
+//!     base_label: Some("original".to_string()),
+//!     ours_label: Some("mine".to_string()),
+//!     theirs_label: Some("theirs".to_string()),
+//!     ..MergeOptions::default()
+//! };
 //!
 //! let result = merge_strings(base, ours, theirs, &options)?;
 //! println!("Merged content:\n{}", result.content);
@@ -45,6 +47,8 @@
 //! - **Normal**: Standard 2-way conflict markers
 //! - **Diff3**: Shows base version in conflicts
 //! - **ZealousDiff3**: More aggressive 3-way conflicts
+
+#![warn(missing_docs)]
 
 mod ffi;
 mod merge;

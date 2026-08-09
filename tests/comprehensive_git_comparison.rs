@@ -17,7 +17,7 @@ struct GitMergeOutput {
 }
 
 fn load_test_scenarios() -> Result<Vec<TestScenario>, Box<dyn std::error::Error>> {
-    let scenarios_dir = Path::new("tests/scenarios");
+    let scenarios_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/scenarios");
     let mut scenarios = Vec::new();
 
     for entry in fs::read_dir(scenarios_dir)? {
@@ -62,18 +62,17 @@ fn ensure_git_available() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn git_merge_file(
+    temp_dir: &Path,
     base: &str,
     ours: &str,
     theirs: &str,
     algorithm: DiffAlgorithm,
-    _level: MergeLevel,
     favor: Option<MergeFavor>,
     style: MergeStyle,
 ) -> Result<GitMergeOutput, Box<dyn std::error::Error>> {
-    let temp_dir = tempfile::tempdir()?;
-    let base_path = temp_dir.path().join("base.txt");
-    let ours_path = temp_dir.path().join("ours.txt");
-    let theirs_path = temp_dir.path().join("theirs.txt");
+    let base_path = temp_dir.join("base.txt");
+    let ours_path = temp_dir.join("ours.txt");
+    let theirs_path = temp_dir.join("theirs.txt");
 
     fs::write(&base_path, base)?;
     fs::write(&ours_path, ours)?;
@@ -163,6 +162,7 @@ fn normalize_output(output: &str) -> String {
 }
 
 #[test]
+#[ignore = "requires Git; run explicitly in the compatibility CI job"]
 fn test_comprehensive_git_comparison() {
     ensure_git_available().expect("git is required for comprehensive compatibility tests");
     let scenarios = load_test_scenarios().expect("Failed to load test scenarios");
@@ -175,9 +175,9 @@ fn test_comprehensive_git_comparison() {
         DiffAlgorithm::Histogram,
     ];
 
-    // Git doesn't have merge level control, so we only test with Zealous
-    // which matches Git's default behavior (as discovered in our tests)
-    let levels = [MergeLevel::Zealous];
+    // Git does not expose merge-level control. ZealousAlnum matches its
+    // default behavior, including punctuation-only gaps between conflicts.
+    let levels = [MergeLevel::ZealousAlnum];
 
     let favors = [
         None,
@@ -195,6 +195,7 @@ fn test_comprehensive_git_comparison() {
     let mut total_tests = 0;
     let mut passing_tests = 0usize;
     let mut failing_tests = Vec::new();
+    let temp_dir = tempfile::tempdir().expect("Failed to create Git merge workspace");
 
     for scenario in &scenarios {
         for &algorithm in &algorithms {
@@ -203,14 +204,16 @@ fn test_comprehensive_git_comparison() {
                     for &style in &styles {
                         total_tests += 1;
 
-                        let mut options = MergeOptions::default();
-                        options.algorithm = algorithm;
-                        options.level = level;
-                        options.favor = favor;
-                        options.style = style;
-                        options.ours_label = Some("ours".to_string());
-                        options.base_label = Some("base".to_string());
-                        options.theirs_label = Some("theirs".to_string());
+                        let options = MergeOptions {
+                            algorithm,
+                            level,
+                            favor,
+                            style,
+                            ours_label: Some("ours".to_string()),
+                            base_label: Some("base".to_string()),
+                            theirs_label: Some("theirs".to_string()),
+                            ..MergeOptions::default()
+                        };
 
                         // Our result
                         let our_result = merge_strings(
@@ -222,11 +225,11 @@ fn test_comprehensive_git_comparison() {
 
                         // Git result (when available - note some combinations aren't supported)
                         let git_result = git_merge_file(
+                            temp_dir.path(),
                             &scenario.base,
                             &scenario.ours,
                             &scenario.theirs,
                             algorithm,
-                            level,
                             favor,
                             style,
                         );
@@ -242,13 +245,13 @@ fn test_comprehensive_git_comparison() {
                                 } else {
                                     let test_name = format!(
                                         "{}_{:?}_{:?}_{:?}_{:?}_mismatch",
-                                        &scenario.name, algorithm, level, favor, style
+                                        scenario.name, algorithm, level, favor, style
                                     );
                                     failing_tests.push(test_name);
 
                                     // Print detailed comparison for debugging (limit output)
                                     if failing_tests.len() <= 3 {
-                                        println!("\n=== MISMATCH: {} ===", &scenario.name);
+                                        println!("\n=== MISMATCH: {} ===", scenario.name);
                                         println!(
                                             "Algorithm: {:?}, Level: {:?}, Favor: {:?}, Style: {:?}",
                                             algorithm, level, favor, style
@@ -276,7 +279,7 @@ fn test_comprehensive_git_comparison() {
                             (Ok(_our), Err(git_err)) => {
                                 let test_name = format!(
                                     "{}_{:?}_{:?}_{:?}_{:?}_git_error",
-                                    &scenario.name, algorithm, level, favor, style
+                                    scenario.name, algorithm, level, favor, style
                                 );
                                 failing_tests.push(test_name);
                                 if failing_tests.len() <= 3 {
@@ -286,7 +289,7 @@ fn test_comprehensive_git_comparison() {
                             (Err(our_err), Ok(_git)) => {
                                 let test_name = format!(
                                     "{}_{:?}_{:?}_{:?}_{:?}_our_error",
-                                    &scenario.name, algorithm, level, favor, style
+                                    scenario.name, algorithm, level, favor, style
                                 );
                                 failing_tests.push(test_name);
                                 if failing_tests.len() <= 3 {
@@ -296,7 +299,7 @@ fn test_comprehensive_git_comparison() {
                             (Err(our_err), Err(git_err)) => {
                                 let test_name = format!(
                                     "{}_{:?}_{:?}_{:?}_{:?}_both_error",
-                                    &scenario.name, algorithm, level, favor, style
+                                    scenario.name, algorithm, level, favor, style
                                 );
                                 failing_tests.push(test_name);
                                 if failing_tests.len() <= 3 {
